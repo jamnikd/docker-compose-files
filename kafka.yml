@@ -1,0 +1,48 @@
+services:
+    kafka:
+        image: docker.io/apache/kafka:3.9.1
+        container_name: kafka
+        environment:
+            KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,PODMAN://0.0.0.0:9093
+            KAFKA_ADVERTISED_LISTENERS: HOST://localhost:9092,PODMAN://kafka:9093
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PODMAN:PLAINTEXT,HOST:PLAINTEXT
+
+            KAFKA_NODE_ID: 1
+            KAFKA_PROCESS_ROLES: broker,controller
+            KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+            KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+
+            KAFKA_INTER_BROKER_LISTENER_NAME: PODMAN
+
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        volumes:
+            - kafka-data:/var/lib/kafka/data
+            - kafka-config:/mnt/shared/config
+            - kafka-secrets:/etc/kafka/secrets
+        ports:
+            - 9092:9092
+        healthcheck:
+            test: ["CMD", "./opt/kafka/bin/kafka-topics.sh", "--bootstrap-server=localhost:9092", "--list"]
+            interval: 3s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+    kafbat-ui:
+        image: docker.io/kafbat/kafka-ui:v1.3.0
+        container_name: kafbat-ui
+        environment:
+            DYNAMIC_CONFIG_ENABLED: "true"
+            KAFKA_CLUSTERS_0_NAME: local
+            KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9093
+        volumes:
+            - kafbatui-data:/etc/kafkaui
+        ports:
+            - 8889:8080
+        depends_on:
+            kafka:
+                condition: service_healthy
+volumes:
+    kafka-data:
+    kafka-config:
+    kafka-secrets:
+    kafbatui-data:
