@@ -1,0 +1,21 @@
+services:
+    rabbitmq:
+        image: docker.io/library/rabbitmq:4.1.2-management
+        container_name: rabbitmq
+        environment:
+            RABBITMQ_DEFAULT_USER: "rabbit"
+            RABBITMQ_DEFAULT_PASS: "admin"
+        volumes:
+            - rabbitmq-data:/var/lib/rabbitmq
+        ports:
+            - 5672:5672 # communication port
+            - 15672:15672 # http api and web ui
+        healthcheck:
+            test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+            interval: 3s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+volumes:
+    rabbitmq-data:
+        
