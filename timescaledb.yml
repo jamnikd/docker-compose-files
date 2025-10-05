@@ -1,0 +1,20 @@
+services:
+    timescaledb:
+        image: docker.io/timescale/timescaledb:2.21.1-pg17
+        container_name: timescaledb
+        environment:
+            POSTGRES_USER: "tigerdata"
+            POSTGRES_PASSWORD: "admin"
+            POSTGRES_DB: "postgres"
+        volumes:
+            - timescaledb-data:/var/lib/postgresql/data
+        ports:
+            - 5433:5432
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U tigerdata -d postgres"]
+            interval: 3s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+volumes:
+    timescaledb-data:
