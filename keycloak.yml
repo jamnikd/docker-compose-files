@@ -1,0 +1,11 @@
+services:
+    keycloak:
+        image: quay.io/keycloak/keycloak:26.3.5
+        container_name: keycloak
+        command: "start-dev --bootstrap-admin-username admin --bootstrap-admin-password admin"
+        volumes:
+            - keycloak-data:/opt/keycloak/data
+        ports:
+            - 8282:8080
+volumes:
+    keycloak-data:
