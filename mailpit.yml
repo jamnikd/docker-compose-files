@@ -1,0 +1,16 @@
+services:
+    mailpit:
+        image: docker.io/axllent/mailpit:v1.27.9
+        container_name: mailpit
+        environment:
+            MP_MAX_MESSAGES: 500
+            MP_DATABASE: "/data/mailpit.db"
+            MP_SMTP_AUTH_ACCEPT_ANY: true
+            MP_SMTP_AUTH_ALLOW_INSECURE: true
+        volumes:
+            - mailpit-data:/data
+        ports:
+            - 8025:8025 # api and web ui
+            - 1025:1025 # smtp
+volumes:
+    mailpit-data:
