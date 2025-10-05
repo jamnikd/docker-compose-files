@@ -1,0 +1,12 @@
+services:
+    grafana:
+        image: docker.io/grafana/grafana:12.2
+        container_name: grafana
+        environment:
+            GF_PLUGINS_PREINSTALL: "yesoreyeram-infinity-datasource@3.6.0, grafana-clock-panel@2.1.9"
+        volumes:
+            - grafana-data:/var/lib/grafana
+        ports:
+            - 3000:3000
+volumes:
+    grafana-data:
