@@ -1,0 +1,13 @@
+services:
+    neo4j:
+        image: docker.io/library/neo4j:5.26.11
+        container_name: neo4j
+        volumes:
+            - neo4j-data:/data
+            - neo4j-logs:/logs
+        ports:
+            - 7474:7474 # http (web ui)
+            - 7687:7687 # bolt
+volumes:
+    neo4j-data:
+    neo4j-logs:

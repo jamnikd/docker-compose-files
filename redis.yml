@@ -1,0 +1,29 @@
+services:
+    redis:
+        image: docker.io/library/redis:8.0.3
+        container_name: redis
+        command: "redis-server --requirepass admin --maxmemory 2mb --maxmemory-policy allkeys-lru"
+        volumes:
+            - redis-data:/data
+        ports:
+            - 6379:6379
+        healthcheck:
+            test: ["CMD", "redis-cli", "PING"]
+            interval: 3s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+    redisinsight:
+        image: docker.io/redis/redisinsight:2.70.1
+        container_name: redisinsight
+        volumes:
+            - redisinsight-data:/data
+        ports:
+            - 5540:5540
+        depends_on:
+            redis:
+                condition: service_healthy
+
+volumes:
+    redis-data:
+    redisinsight-data:
