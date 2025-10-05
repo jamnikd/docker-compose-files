@@ -1,0 +1,54 @@
+services:
+    elasticsearch:
+        image: docker.io/library/elasticsearch:9.1.0
+        container_name: elasticsearch
+        environment:
+            discovery.type: "single-node"
+            xpack.security.enabled: "false" # Only for development
+            ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+        volumes:
+            - elasticsearch-data:/usr/share/elasticsearch/data
+            - ./configurations/elk/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:z
+        ports:
+            - 9200:9200 # http
+            - 9300:9300 # tcp
+        healthcheck:
+            test: [
+                "CMD-SHELL",
+                "curl --user elastic:${ELASTIC_PASSWORD} http://localhost:9200/_cluster/health?pretty | grep green"
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 10s
+    logstash:
+        image: docker.io/library/logstash:9.1.0
+        container_name: logstash
+        environment:
+            LS_JAVA_OPTS: "-Xms512m -Xmx512m"
+        volumes:
+            - ./configurations/elk/logstash.yml:/usr/share/logstash/config/logstash.yml:z
+            - ./configurations/elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:z
+            - logstash-data:/usr/share/logstash/data
+        ports:
+            - 5044:5044
+        depends_on:
+            elasticsearch:
+                condition: service_healthy
+    kibana:
+        image: docker.io/library/kibana:9.1.0
+        container_name: kibana
+        environment:
+            ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+        volumes:
+            - ./configurations/elk/kibana.yml:/usr/share/kibana/config/kibana.yml:z
+            - kibana-data:/usr/share/kibana/data
+        ports:
+            - 5601:5601
+        depends_on:
+            elasticsearch:
+                condition: service_healthy
+volumes:
+    elasticsearch-data:
+    logstash-data:
+    kibana-data:
