@@ -1,0 +1,14 @@
+services:
+    jaeger:
+        image: docker.io/jaegertracing/jaeger:2.10.0
+        container_name: jaeger
+        environment:
+            LOG_LEVEL: "INFO"
+        volumes:
+            - jaeger-bind:/tmp
+        ports:
+            - "16686:16686" # web ui and http read api (otlp-based json)
+            #- "4317:4317" # gRPC write api (otlp protobuf)
+            - "4318:4318" # http write api (otlp protobuf or otlp json)
+volumes:
+    jaeger-bind:

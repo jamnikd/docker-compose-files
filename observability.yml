@@ -1,0 +1,13 @@
+include:
+    - grafana.yml
+    - jaeger.yml
+    - elk.yml
+    - prometheus.yml
+    - otel.yml
+
+services:
+    otel-collector:
+        depends_on:
+            - jaeger
+            - elasticsearch
+            - prometheus
