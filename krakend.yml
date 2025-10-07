@@ -1,0 +1,15 @@
+services:
+    krakend:
+        build: ./.docker/krakend
+        container_name: krakend-watch
+        command: "run -dc /etc/krakend/config/krakend.tmpl"
+        environment:
+            FC_ENABLE: 1
+            FC_PARTIALS: /etc/krakend/config/partials
+            FC_SETTINGS: /etc/krakend/config/settings
+            FC_TEMPLATES: /etc/krakend/config/templates
+            FC_OUT: /tmp/krakend.json 
+        volumes:
+            - ./configurations/krakend:/etc/krakend/config:z
+        ports:
+            - 8000:8080

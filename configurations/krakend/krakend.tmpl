@@ -1,0 +1,15 @@
+{
+    "$schema": "https://www.krakend.io/schema/v2.11/krakend.json",
+    "version": 3,
+    "timeout": "{{ .gateway.timeout }}",
+    "cache_ttl": "{{ .gateway.cache_ttl }}",
+    "endpoints": [
+        {{ template "endpoint.tmpl" (dict
+            "method" "GET"
+            "endpoint" "/git/{user}"
+            "host" "https://api.github.com"
+			"url_pattern" "/users/{user}"
+        ) }}
+    ],
+    "extra_config": {{ include "extra_config.json" }}
+}
