@@ -1,7 +1,8 @@
 services:
     krakend:
         build: ./.docker/krakend
-        container_name: krakend-watch
+        image: krakend:watch-v2.11.0
+        container_name: krakend
         command: "run -dc /etc/krakend/config/krakend.tmpl"
         environment:
             FC_ENABLE: 1
