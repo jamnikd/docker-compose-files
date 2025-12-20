@@ -1,7 +1,7 @@
 services:
     krakend:
         build: ./.docker/krakend
-        image: krakend:watch-v2.11.0
+        image: localhost/krakend:watch-v2.11.0
         container_name: krakend
         command: "run -dc /etc/krakend/config/krakend.tmpl"
         environment:
