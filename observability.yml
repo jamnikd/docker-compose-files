@@ -6,6 +6,10 @@ include:
     - otel.yml
 
 services:
+    logstash:
+        profiles: [ "never" ]
+    kibana:
+        profiles: [ "never" ]
     otel-collector:
         depends_on:
             - jaeger
